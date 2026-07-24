@@ -172,7 +172,11 @@ class ContactService {
 
       // 2. Text match filter (contains, startsWith, endsWith, exact)
       if (options.query.trim().isNotEmpty) {
-        if (!c.matchesQuery(options.query, options.matchType)) {
+        if (!c.matchesQuery(
+          options.query,
+          options.matchType,
+          isCaseSensitive: options.isCaseSensitive,
+        )) {
           return false;
         }
       }

@@ -164,6 +164,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _applyFilters();
   }
 
+  void _toggleCaseSensitive(bool value) {
+    setState(() {
+      _filterOptions = _filterOptions.copyWith(isCaseSensitive: value);
+    });
+    _applyFilters();
+  }
+
   void _updateSelectedAccount(String accountKey) {
     setState(() {
       _filterOptions = _filterOptions.copyWith(selectedAccountKey: accountKey);
@@ -934,6 +941,47 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             }).toList(),
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        // Case Sensitivity Checkbox
+        InkWell(
+          onTap: () => _toggleCaseSensitive(!_filterOptions.isCaseSensitive),
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: Checkbox(
+                    value: _filterOptions.isCaseSensitive,
+                    onChanged: (val) => _toggleCaseSensitive(val ?? false),
+                    activeColor: AppTheme.primary,
+                    side: const BorderSide(color: AppTheme.textMuted, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  t.caseSensitive,
+                  style: TextStyle(
+                    color: _filterOptions.isCaseSensitive
+                        ? AppTheme.textPrimary
+                        : AppTheme.textMuted,
+                    fontSize: 13,
+                    fontWeight: _filterOptions.isCaseSensitive
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

@@ -56,9 +56,13 @@ class ExportableContact {
         .toLowerCase();
   }
 
-  /// Check if the full merged contact name matches the query string based on match type
-  bool matchesQuery(String query, SearchMatchType matchType) {
-    final cleanQuery = _normalize(query);
+  /// Check if the full merged contact name matches the query string based on match type and case sensitivity
+  bool matchesQuery(
+    String query,
+    SearchMatchType matchType, {
+    bool isCaseSensitive = false,
+  }) {
+    final cleanQuery = isCaseSensitive ? query.trim() : _normalize(query);
     if (cleanQuery.isEmpty) return true;
 
     // Full merged name string (e.g. "Ahmet Yılmaz RHS")
@@ -66,9 +70,14 @@ class ExportableContact {
         ? displayName.trim()
         : '$firstName $lastName'.trim();
 
-    final normFullName = _normalize(combinedName);
-    final normAltName = _normalize('$firstName $lastName'.trim());
-    final normPhone = _normalize(phoneNumber).replaceAll(RegExp(r'\s+'), '');
+    final normFullName =
+        isCaseSensitive ? combinedName : _normalize(combinedName);
+    final normAltName = isCaseSensitive
+        ? '$firstName $lastName'.trim()
+        : _normalize('$firstName $lastName'.trim());
+    final normPhone = isCaseSensitive
+        ? phoneNumber.trim().replaceAll(RegExp(r'\s+'), '')
+        : _normalize(phoneNumber).replaceAll(RegExp(r'\s+'), '');
 
     switch (matchType) {
       case SearchMatchType.contains:
@@ -118,22 +127,26 @@ class FilterOptions {
   final String query;
   final SearchMatchType matchType;
   final String selectedAccountKey;
+  final bool isCaseSensitive;
 
   const FilterOptions({
     this.query = '',
     this.matchType = SearchMatchType.contains,
     this.selectedAccountKey = 'ALL',
+    this.isCaseSensitive = false,
   });
 
   FilterOptions copyWith({
     String? query,
     SearchMatchType? matchType,
     String? selectedAccountKey,
+    bool? isCaseSensitive,
   }) {
     return FilterOptions(
       query: query ?? this.query,
       matchType: matchType ?? this.matchType,
       selectedAccountKey: selectedAccountKey ?? this.selectedAccountKey,
+      isCaseSensitive: isCaseSensitive ?? this.isCaseSensitive,
     );
   }
 }

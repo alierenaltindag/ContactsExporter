@@ -100,6 +100,19 @@ void main() {
       expect(contactRhs.matchesQuery('Ahmet', SearchMatchType.exact), isFalse);
       expect(contactRhs.matchesQuery('RHS', SearchMatchType.exact), isFalse);
     });
+
+    test('Case sensitivity filter test', () {
+      // Case insensitive (default false): 'rhs' matches 'Ahmet Yılmaz RHS'
+      expect(contactRhs.matchesQuery('rhs', SearchMatchType.endsWith, isCaseSensitive: false), isTrue);
+
+      // Case sensitive (isCaseSensitive: true): 'rhs' does NOT match 'RHS'
+      expect(contactRhs.matchesQuery('rhs', SearchMatchType.endsWith, isCaseSensitive: true), isFalse);
+      expect(contactRhs.matchesQuery('RHS', SearchMatchType.endsWith, isCaseSensitive: true), isTrue);
+
+      // Starts with case sensitive
+      expect(contactRhs.matchesQuery('ahmet', SearchMatchType.startsWith, isCaseSensitive: true), isFalse);
+      expect(contactRhs.matchesQuery('Ahmet', SearchMatchType.startsWith, isCaseSensitive: true), isTrue);
+    });
   });
 
   group('Contact Account Filtering & Counting', () {

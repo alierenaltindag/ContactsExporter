@@ -36,6 +36,7 @@ class AppTranslations {
   String get startsWith => isTurkish ? 'İle Başlar' : 'Starts With';
   String get endsWith => isTurkish ? 'İle Biter' : 'Ends With';
   String get exactMatch => isTurkish ? 'Tam Eşleşme' : 'Exact Match';
+  String get caseSensitive => isTurkish ? 'Büyük/Küçük Harf Duyarlı' : 'Case Sensitive';
 
   // Contacts List
   String matchedContacts(int count) => isTurkish ? 'Eşleşen Rehber Kayıtları ($count)' : 'Matched Contacts ($count)';
