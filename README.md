@@ -4,6 +4,14 @@
   <p align="center">
     <b>A modern, cross-platform Flutter application to scan, filter, and export contacts from SIM cards, Google accounts, iCloud, and device storage to CSV files.</b>
   </p>
+  <p align="center">
+    <a href="https://github.com/alierenaltindag/ContactsExporter/releases/latest">
+      <img src="https://img.shields.io/github/v/release/alierenaltindag/ContactsExporter?color=6366f1&label=Download%20APK&logo=android" alt="Download APK" />
+    </a>
+    <a href="LICENSE">
+      <img src="https://img.shields.io/badge/license-MIT-emerald" alt="License" />
+    </a>
+  </p>
 </p>
 
 ---
@@ -79,6 +87,14 @@ contacts_exporter/
 
 ## 🚀 Getting Started
 
+### 📥 Quick Download (Pre-built Android APK)
+
+Don't want to build from source? Download the latest pre-compiled Android APK:
+- 📦 [**Download `ContactExporter.apk`**](https://github.com/alierenaltindag/ContactsExporter/releases/latest/download/ContactExporter.apk)
+- 🏷️ [View All Releases](https://github.com/alierenaltindag/ContactsExporter/releases)
+
+---
+
 ### Prerequisites
 
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) (v3.19.0 or higher)
@@ -87,10 +103,9 @@ contacts_exporter/
 ### Installation
 
 1. **Clone the Repository**:
-
    ```bash
-   git clone https://github.com/your-username/contacts_exporter.git
-   cd contacts_exporter
+   git clone https://github.com/alierenaltindag/ContactsExporter.git
+   cd ContactsExporter
    ```
 
 2. **Install Dependencies**:
