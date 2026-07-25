@@ -19,6 +19,18 @@
 ## 🌟 Key Features
 
 - **📱 Cross-Platform Compatibility**: Fully compatible with Android (API 21+) and iOS devices.
+- **📥 Contact Import & Custom Column Mapping**:
+  - Pick any `.csv` or `.txt` contact file from local device storage.
+  - Interactive **CSV Column Mapper**: Auto-detects headers and allows mapping custom CSV columns to `First Name`, `Last Name`, `Phone Number`, and `Display Name`.
+  - **Target Account Source Selection**: Choose destination storage account (Google Account, SIM Card, Local Storage, etc.).
+- **🔄 Duplicate Avoidance & Name Override ("Skip existing phone numbers")**:
+  - **Phone Normalization**: Trims spaces, dashes, parentheses, and leading zero/country codes for accurate matching.
+  - **Duplicate Prevention**: Prevents creating duplicate entries for existing phone numbers, while updating existing contacts' First and Last Names with new CSV data.
+  - Interactive localized tooltip explaining duplicate & override behavior.
+- **🛡️ Automatic Pre-Import Backup & History Rollback (Undo)**:
+  - **Automatic Pre-Import Backup**: Creates a complete JSON backup of device contacts prior to every import session.
+  - **Import History**: Displays past imports with date, filename, target account, and `+Added`, `~Updated`, `øSkipped` badges.
+  - **Rollback (Undo)**: Safely rollback any past import with a single click to remove newly created contacts and restore state.
 - **🔍 Multi-Source Storage Account Scanning**:
   - Automatically queries all contact storage locations: **SIM Cards**, **Google Accounts**, **iCloud**, **Exchange**, and **Device Local Storage**.
   - Displays real-time contact counts per storage account.
@@ -28,6 +40,7 @@
   - **Starts With**: Evaluates if the full merged contact name string starts with the query string.
   - **Ends With**: Evaluates if the full merged contact name string ends with the query string.
   - **Exact Match**: Evaluates if the full merged contact name string equals the query string exactly.
+  - **High Performance**: Pre-computed string normalizations ensure smooth 60 FPS scrolling and instant search filtering.
 - **📊 CSV Exporting**: Generates clean, properly formatted CSV files with separate columns:
   - `First Name`
   - `Last Name`
@@ -48,6 +61,7 @@
 - **Framework**: [Flutter 3.x](https://flutter.dev) (Dart 3.x)
 - **UI Design**: Material Design 3 Dark Theme
 - **Contact Access**: [`flutter_contacts`](https://pub.dev/packages/flutter_contacts)
+- **File Picker**: [`file_picker`](https://pub.dev/packages/file_picker)
 - **Permissions Handling**: [`permission_handler`](https://pub.dev/packages/permission_handler)
 - **CSV Encoding**: [`csv`](https://pub.dev/packages/csv)
 - **File Distribution**: [`share_plus`](https://pub.dev/packages/share_plus)
@@ -67,20 +81,24 @@ contacts_exporter/
 │       └── app_logo.png   # Application icon asset
 ├── lib/
 │   ├── l10n/
-│   │   └── app_localizations.dart  # English & Turkish translations
+│   │   └── app_localizations.dart      # English & Turkish translations
 │   ├── models/
-│   │   └── contact_model.dart      # Data models & filter logic
+│   │   ├── contact_model.dart          # Contact models & cached filter logic
+│   │   └── import_model.dart           # Import mapping & history models
 │   ├── services/
-│   │   └── contact_service.dart    # Contact fetching, CSV generation & sharing
+│   │   ├── contact_service.dart        # Contact fetching, CSV export & sharing
+│   │   └── import_service.dart         # CSV parsing, backup & rollback engine
 │   ├── theme/
-│   │   └── app_theme.dart          # Dark theme specification
+│   │   └── app_theme.dart              # Dark theme specification
 │   ├── ui/
-│   │   └── home_screen.dart        # Main UI screen & interactive controls
-│   └── main.dart                   # Application entrypoint
-├── test/                           # Unit and widget test suite
-├── pubspec.yaml                    # Flutter dependencies and assets configuration
-├── LICENSE                         # MIT License
-└── README.md                       # Project documentation
+│   │   ├── home_screen.dart            # Main screen & mode switcher
+│   │   ├── import_view.dart            # CSV import & column mapping view
+│   │   └── import_history_dialog.dart  # Import history & undo dialog
+│   └── main.dart                       # Application entrypoint
+├── test/                               # Unit and widget test suite
+├── pubspec.yaml                        # Flutter dependencies and assets configuration
+├── LICENSE                             # MIT License
+└── README.md                           # Project documentation
 ```
 
 ---
