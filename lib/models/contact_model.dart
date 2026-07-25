@@ -32,6 +32,12 @@ class ExportableContact {
   final String accountType;
   final String accountKey;
 
+  late final String fullCombinedName;
+  late final String normFullNameLower;
+  late final String normFullNameCase;
+  late final String normPhoneLower;
+  late final String normPhoneCase;
+
   ExportableContact({
     required this.id,
     required this.firstName,
@@ -41,7 +47,17 @@ class ExportableContact {
     required this.accountName,
     required this.accountType,
     required this.accountKey,
-  });
+  }) {
+    fullCombinedName = displayName.trim().isNotEmpty
+        ? displayName.trim()
+        : '$firstName $lastName'.trim();
+
+    normFullNameCase = fullCombinedName;
+    normFullNameLower = _normalize(fullCombinedName);
+
+    normPhoneCase = phoneNumber.trim().replaceAll(RegExp(r'\s+'), '');
+    normPhoneLower = _normalize(phoneNumber).replaceAll(RegExp(r'\s+'), '');
+  }
 
   static String _normalize(String input) {
     return input
@@ -56,46 +72,40 @@ class ExportableContact {
         .toLowerCase();
   }
 
+  /// Normalizes phone numbers by removing spaces, hyphens, brackets, and non-digit chars (except leading '+')
+  static String normalizePhone(String phone) {
+    if (phone.isEmpty) return '';
+    final trimmed = phone.trim();
+    final hasPlus = trimmed.startsWith('+');
+    final digitsOnly = trimmed.replaceAll(RegExp(r'[^\d]'), '');
+    return hasPlus ? '+$digitsOnly' : digitsOnly;
+  }
+
   /// Check if the full merged contact name matches the query string based on match type and case sensitivity
   bool matchesQuery(
     String query,
     SearchMatchType matchType, {
     bool isCaseSensitive = false,
   }) {
+    if (query.trim().isEmpty) return true;
     final cleanQuery = isCaseSensitive ? query.trim() : _normalize(query);
     if (cleanQuery.isEmpty) return true;
 
-    // Full merged name string (e.g. "Ahmet Yılmaz RHS")
-    final String combinedName = displayName.trim().isNotEmpty
-        ? displayName.trim()
-        : '$firstName $lastName'.trim();
-
-    final normFullName =
-        isCaseSensitive ? combinedName : _normalize(combinedName);
-    final normAltName = isCaseSensitive
-        ? '$firstName $lastName'.trim()
-        : _normalize('$firstName $lastName'.trim());
-    final normPhone = isCaseSensitive
-        ? phoneNumber.trim().replaceAll(RegExp(r'\s+'), '')
-        : _normalize(phoneNumber).replaceAll(RegExp(r'\s+'), '');
+    final targetName = isCaseSensitive ? normFullNameCase : normFullNameLower;
+    final targetPhone = isCaseSensitive ? normPhoneCase : normPhoneLower;
 
     switch (matchType) {
       case SearchMatchType.contains:
-        return normFullName.contains(cleanQuery) ||
-            normAltName.contains(cleanQuery) ||
-            normPhone.contains(cleanQuery);
+        return targetName.contains(cleanQuery) || targetPhone.contains(cleanQuery);
 
       case SearchMatchType.startsWith:
-        return normFullName.startsWith(cleanQuery) ||
-            (normAltName.isNotEmpty && normAltName.startsWith(cleanQuery));
+        return targetName.startsWith(cleanQuery);
 
       case SearchMatchType.endsWith:
-        return normFullName.endsWith(cleanQuery) ||
-            (normAltName.isNotEmpty && normAltName.endsWith(cleanQuery));
+        return targetName.endsWith(cleanQuery);
 
       case SearchMatchType.exact:
-        return normFullName == cleanQuery ||
-            (normAltName.isNotEmpty && normAltName == cleanQuery);
+        return targetName == cleanQuery;
     }
   }
 }

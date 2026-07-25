@@ -16,8 +16,12 @@ class AppTranslations {
   bool get isTurkish => language == AppLanguage.tr;
 
   // Title & Subtitle
-  String get appTitle => isTurkish ? 'Rehber Dışa Aktarıcı' : 'Contacts Exporter';
+  String get appTitle => isTurkish ? 'Rehber Aktarıcı' : 'Contacts Exporter';
   String get appSubtitle => isTurkish ? 'Rehberi Tara, Filtrele ve CSV Aktar' : 'Scan, Filter & Export CSV';
+
+  // Mode Switcher
+  String get exportTab => isTurkish ? 'Dışa Aktar' : 'Export';
+  String get importTab => isTurkish ? 'İçe Aktar' : 'Import';
 
   // Stats
   String get totalContacts => isTurkish ? 'TOPLAM REHBER' : 'TOTAL CONTACTS';
@@ -54,6 +58,47 @@ class AppTranslations {
   String get shareCsvFile => isTurkish ? 'CSV Dosyasını Paylaş' : 'Share CSV File';
   String get close => isTurkish ? 'Kapat' : 'Close';
   String get rescanTooltip => isTurkish ? 'Rehberi Yeniden Tara' : 'Rescan Contacts';
+
+  // Import Feature Localization
+  String get selectCsvFile => isTurkish ? 'CSV Dosyası Seç' : 'Select CSV File';
+  String get changeCsvFile => isTurkish ? 'Farklı CSV Seç' : 'Change CSV File';
+  String get noFileSelected => isTurkish ? 'Henüz CSV dosyası seçilmedi' : 'No CSV file selected';
+  String rowsFound(int count) => isTurkish ? '$count Satır Bulundu' : '$count Rows Found';
+  String get columnMappingTitle => isTurkish ? 'Sütun Eşleştirme' : 'Column Mapping';
+  String get columnMappingSub => isTurkish
+      ? 'CSV dosyanızdaki sütunları rehber alanlarıyla eşleştirin.'
+      : 'Match your CSV columns with contact fields.';
+  String get mapFirstName => isTurkish ? 'İsim Sütunu' : 'First Name Column';
+  String get mapLastName => isTurkish ? 'Soyisim Sütunu' : 'Last Name Column';
+  String get mapPhone => isTurkish ? 'Telefon Numarası Sütunu' : 'Phone Number Column';
+  String get mapDisplayName => isTurkish ? 'Görünen İsim Sütunu (Opsiyonel)' : 'Display Name Column (Optional)';
+  String get selectColumn => isTurkish ? 'Sütun Seçin' : 'Select Column';
+  String get ignoreColumn => isTurkish ? '— Kullanma —' : '— Do Not Use —';
+  String get targetAccountTitle => isTurkish ? 'Hedef Depolama Hesabı' : 'Target Storage Account';
+  String get skipExistingNumbers => isTurkish ? 'Varolan numaraları atla' : 'Skip existing phone numbers';
+  String get skipExistingTooltip => isTurkish
+      ? 'İşaretlenirse, rehberde zaten kayıtlı olan telefon numaraları tekrar eklenmez; ancak bu numaraya sahip kişilerin isim ve soyisim bilgileri yeni CSV verisiyle güncellenir.'
+      : 'If checked, phone numbers already in your contacts will not be duplicated; however, existing contacts with these numbers will have their names updated.';
+  String get startImport => isTurkish ? 'Rehbere İçe Aktar' : 'Import to Contacts';
+  String get importingContacts => isTurkish ? 'Kişiler İçe Aktarılıyor...' : 'Importing Contacts...';
+  String get importSuccessTitle => isTurkish ? 'İçe Aktarım Tamamlandı!' : 'Import Completed!';
+  String importSummary(int added, int updated, int skipped) => isTurkish
+      ? '$added yeni kişi eklendi, $updated varolan kişi güncellendi, $skipped kayıt atlandı.'
+      : '$added new contact(s) added, $updated existing contact(s) updated, $skipped record(s) skipped.';
+  String get invalidMappingError => isTurkish
+      ? 'Lütfen en az Telefon Numarası ve bir İsim sütunu seçin.'
+      : 'Please select at least Phone Number and one Name column.';
+
+  // Import History & Rollback
+  String get importHistory => isTurkish ? 'İçe Aktarım Geçmişi' : 'Import History';
+  String get noHistoryFound => isTurkish ? 'Henüz bir içe aktarım geçmişi bulunmuyor.' : 'No import history found.';
+  String get undoImport => isTurkish ? 'Geri Al' : 'Undo';
+  String get undoConfirmTitle => isTurkish ? 'İçeri Aktarımı Geri Al' : 'Undo Import';
+  String get undoConfirmMsg => isTurkish
+      ? 'Bu içe aktarım işlemini geri almak istediğinizden emin misiniz? Eklenen kişiler rehberden silinecektir.'
+      : 'Are you sure you want to undo this import? Newly added contacts will be deleted.';
+  String get undoSuccess => isTurkish ? 'İçeri aktarım başarıyla geri alındı!' : 'Import successfully rolled back!';
+  String get cancel => isTurkish ? 'İptal' : 'Cancel';
 
   // Dialog & Success
   String get exportSuccess => isTurkish ? 'CSV Başarıyla Dışa Aktarıldı!' : 'CSV Exported Successfully!';

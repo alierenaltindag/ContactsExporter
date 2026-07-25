@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/contact_model.dart';
+import '../models/import_model.dart';
 import '../services/contact_service.dart';
 import '../theme/app_theme.dart';
+import 'import_history_dialog.dart';
+import 'import_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,6 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   AppLanguage _currentLanguage = AppLanguage.en;
   AppTranslations get t => AppTranslations(_currentLanguage);
+
+  AppMode _currentMode = AppMode.export;
 
   bool _isLoading = true;
   bool _hasPermission = false;
@@ -371,38 +376,52 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _openImportHistory() {
+    showDialog(
+      context: context,
+      builder: (ctx) => ImportHistoryDialog(
+        currentLanguage: _currentLanguage,
+        onRollbackSuccess: _checkPermissionAndFetch,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 12,
         title: Row(
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.asset(
                 'assets/images/app_logo.png',
-                width: 32,
-                height: 32,
+                width: 28,
+                height: 28,
                 fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  t.appTitle,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                t.appTitle,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
                 ),
-                Text(
-                  t.appSubtitle,
-                  style: const TextStyle(fontSize: 11, color: AppTheme.textMuted),
-                ),
-              ],
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
             ),
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.history_rounded),
+            tooltip: t.importHistory,
+            onPressed: _openImportHistory,
+          ),
           // Language Switcher Button
           Padding(
             padding: const EdgeInsets.only(right: 4.0),
@@ -446,8 +465,25 @@ class _HomeScreenState extends State<HomeScreen> {
               ? _buildLoadingView()
               : _errorMessage != null
                   ? _buildErrorView()
-                  : _buildMainView(),
-      bottomNavigationBar: _hasPermission && !_isLoading && _errorMessage == null
+                  : Column(
+                      children: [
+                        _buildModeSwitcher(),
+                        Expanded(
+                          child: _currentMode == AppMode.export
+                              ? _buildMainView()
+                              : ImportView(
+                                  existingContacts: _allContacts,
+                                  accountSources: _accountSources,
+                                  currentLanguage: _currentLanguage,
+                                  onImportSuccess: _checkPermissionAndFetch,
+                                ),
+                        ),
+                      ],
+                    ),
+      bottomNavigationBar: _hasPermission &&
+              !_isLoading &&
+              _errorMessage == null &&
+              _currentMode == AppMode.export
           ? _buildBottomActionBar()
           : null,
     );
@@ -542,6 +578,89 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: _checkPermissionAndFetch,
               icon: const Icon(Icons.refresh_rounded),
               label: Text(t.retry),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModeSwitcher() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceDark,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.borderDark),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildModeTab(
+              mode: AppMode.export,
+              icon: Icons.file_download_rounded,
+              label: t.exportTab,
+            ),
+          ),
+          Expanded(
+            child: _buildModeTab(
+              mode: AppMode.import,
+              icon: Icons.file_upload_rounded,
+              label: t.importTab,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModeTab({
+    required AppMode mode,
+    required IconData icon,
+    required String label,
+  }) {
+    final isSelected = _currentMode == mode;
+
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _currentMode = mode;
+        });
+      },
+      borderRadius: BorderRadius.circular(10),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? AppTheme.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppTheme.primary.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : [],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: isSelected ? Colors.white : AppTheme.textMuted,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : AppTheme.textMuted,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontSize: 14,
+              ),
             ),
           ],
         ),

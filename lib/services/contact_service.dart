@@ -9,19 +9,20 @@ import 'package:share_plus/share_plus.dart';
 import '../models/contact_model.dart';
 
 class ContactService {
-  /// Request contact read permission using permission_handler & flutter_contacts
+  /// Request contact read & write permission using permission_handler & flutter_contacts
   Future<bool> requestPermission() async {
     final status = await Permission.contacts.request();
     if (status.isGranted) {
       return true;
     }
-    return await FlutterContacts.requestPermission();
+    return await FlutterContacts.requestPermission(readonly: false);
   }
 
   /// Check if contacts permission is granted
   Future<bool> hasPermission() async {
-    return await Permission.contacts.isGranted ||
-        await FlutterContacts.requestPermission(readonly: true);
+    final status = await Permission.contacts.status;
+    if (status.isGranted) return true;
+    return await FlutterContacts.requestPermission(readonly: false);
   }
 
   /// Helper to format raw account type and account name into clean user-friendly labels
@@ -64,10 +65,13 @@ class ContactService {
       throw Exception('Permission to read contacts was denied.');
     }
 
-    // Fetch contacts with full properties and storage accounts metadata
+    // Fetch contacts with properties and storage accounts metadata (excluding heavy photos)
     final rawContacts = await FlutterContacts.getContacts(
       withProperties: true,
       withAccounts: true,
+      withThumbnail: false,
+      withPhoto: false,
+      withGroups: false,
     );
 
     final List<ExportableContact> exportableContacts = [];
